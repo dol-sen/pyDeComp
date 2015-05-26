@@ -74,3 +74,19 @@ This is the only edit point required then.'''
 EXTENSION_SEPARATOR = '.'
 
 
+CONTENTS_DEFINITIONS = {
+	"tar"      : ["_common", "tar", ["--xattrs", "-tvf", "%(source)s"], "TAR", [".tar"]],
+	"gzip"     : ["_common", "tar", ["--xattrs", "-tvzf", "%(source)s"], "GZIP", [".tgz", ".tar.gz", "gz"]],
+	"lbzip2"   : ["_common", "tar", ["--xattrs", "-I", "lbzip2", "-tvf", "%(source)s"], "LBZIP2", [".tbz2", "bz2", ".tar.bz2"]],
+	"bzip2"    : ["_common", "tar", ["--xattrs", "-tvf", "%(source)s"], "BZIP2", [".tbz2", "bz2", ".tar.bz2"]],
+	"xz"       : ["_common", "tar", ["--xattrs", "-tvf", "%(source)s"], "XZ", ["tar.xz", "xz"]],
+	"pixz"     : ["_common", "tar", ["--xattrs", "-I", "pixz", "-tvf", "%(source)s"], "PIXZ", ["tar.xz", "xz"]],
+	"isoinfo_l": ["_common", "isoinfo", ["-l", "-i", "%(source)s"], "ISOINFO", []],
+	"isoinfo_f": ["_common", "isoinfo", ["-f", "-i", "%(source)s"], "ISOINFO", []],
+	"squashfs" : ["_sqfs", "mount", ["%(source)s", "%(destination)s"], "SQUASHFS", ["squashfs", "sfs"]],
+}
+
+# isoinfo_f should be a last resort only
+CONTENTS_SEARCH_ORDER = ["xz", "lbzip2", "isoinfo_l", "gzip", "tar", "squashfs", "bzip2", "pixz", "isoinfo_f"]
+
+
