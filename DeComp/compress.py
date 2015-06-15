@@ -14,6 +14,7 @@ Maintained in full by:
 
 '''
 
+from __future__ import print_function
 
 import os
 
@@ -83,7 +84,7 @@ class CompressMap(object):
 			infodict = self.create_infodict(source, None,
 				basedir, filename, mode or self.mode, auto_extension)
 		if not infodict['mode']:
-			print self.mode_error
+			print(self.mode_error)
 			return False
 		if auto_extension:
 			infodict['auto-ext'] = True
@@ -109,7 +110,7 @@ class CompressMap(object):
 		if infodict['mode'] in ['auto']:
 			infodict['mode'] = self.determine_mode(infodict['source'])
 			if not infodict['mode']:
-				print self.mode_error
+				print(self.mode_error)
 				return False
 		return self._run(infodict)
 
@@ -121,20 +122,20 @@ class CompressMap(object):
 		@return boolean
 		'''
 		if not self.is_supported(infodict['mode']):
-			print "mode: %s is not supported in the current %s definitions" \
-				% (infodict['mode'], self.loaded_type[1])
+			print("mode: %s is not supported in the current %s definitions" \
+				% (infodict['mode'], self.loaded_type[1]))
 			return False
 		try:
 			func = getattr(self, self._map[infodict['mode']].func)
 			success = func(infodict)
 		except AttributeError:
-			print "FAILED to find function '%s'" % str(self._map[infodict['mode']].func)
+			print("FAILED to find function '%s'" % str(self._map[infodict['mode']].func))
 			return False
 		#except Exception as e:
 			#msg = "Error performing %s %s, " % (mode, self.loaded_type[0]) + \
 				#"is the appropriate utility installed on your system?"
-			#print msg
-			#print "Exception:", e
+			#print(msg)
+			#print("Exception:", e)
 			#return False
 		return success
 
@@ -198,8 +199,8 @@ class CompressMap(object):
 		'''
 		print("*************  _comon()")
 		if not infodict['mode'] or not self.is_supported(infodict['mode']):
-			print "ERROR: CompressMap; %s mode: %s not correctly set!" \
-				% (self.loaded_type[0], infodict['mode'])
+			print("ERROR: CompressMap; %s mode: %s not correctly set!" \
+				% (self.loaded_type[0], infodict['mode']))
 			return False
 
 		#Avoid modifying the source dictionary
@@ -289,8 +290,8 @@ class CompressMap(object):
 		'''
 		print("*************  _sqfs()")
 		if not infodict['mode'] or not self.is_supported(infodict['mode']):
-			print "ERROR: CompressMap; %s mode: %s not correctly set!" \
-				% (self.loaded_type[0], infodict['mode'])
+			print("ERROR: CompressMap; %s mode: %s not correctly set!" \
+				% (self.loaded_type[0], infodict['mode']))
 			return False
 
 		#Avoid modifying the source dictionary

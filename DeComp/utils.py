@@ -2,6 +2,8 @@
 Utility functions
 '''
 
+from __future__ import print_function
+
 import sys
 from collections import namedtuple
 from subprocess import Popen
@@ -33,7 +35,7 @@ def create_classes(definitions, fields):
 
 
 def subcmd(command, exc="", env={}, debug=False):
-	#print "***** cmd()"
+	#print("***** cmd()")
 	sys.stdout.flush()
 	args=[BASH_CMD]
 	if debug:
@@ -42,7 +44,7 @@ def subcmd(command, exc="", env={}, debug=False):
 	args.append(command)
 	print("$$$$$$$", args)
 	if debug:
-		print "***** subcmd(); args =", args
+		print("***** subcmd(); args =", args)
 	try:
 		proc = Popen(args, env=env)
 	except:

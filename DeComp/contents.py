@@ -13,12 +13,14 @@ Maintained in full by:
 
 '''
 
+from __future__ import print_function
+
 import os
 from subprocess import Popen, PIPE
 
 from DeComp.definitions import (CONTENTS_SEARCH_ORDER, DEFINITION_FIELDS,
 	EXTENSION_SEPARATOR)
-from DeComp.utils import create_classes
+from DeComp.utils import create_classes, subcmd
 
 
 class ContentsMap(object):
@@ -110,10 +112,10 @@ class ContentsMap(object):
 			results = ''
 			print("ContentsMap: _common(); OSError:" , e, ' '.join(_cmd))
 		if verbose:
-			print result
+			print(result)
 		return result
 
 
 	@staticmethod
-	def _sqfs(source, destination, cmd, args, verbose):
+	def _mountable(source, destination, cmd, args, verbose):
 		return 'Code ME!!!!!!'
