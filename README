@@ -1,0 +1,12 @@
+
+pyDecomp is a flexible library of various compression and decompression
+and contents methods run via subprocess calls.
+
+pyDecomp comprises two main classes, CompressMap which can hold either
+compress or decompress definitions and ContentsMap which handles generating
+contents listings of the compressed archives.  The reason for it's existence
+is to create a simple consistent yet configurable interface for applications.
+This library makes it easy to extend with new definitions as new
+compress/decompress methods become available.
+
+NOTE: At this time, contents generation for squashfs types is not complete.
