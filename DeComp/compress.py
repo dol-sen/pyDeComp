@@ -197,13 +197,13 @@ class CompressMap(object):
 		@param infodict: dict as returned by this class's create_infodict()
 		@return boolean
 		'''
-		print("*************  _comon()")
+		# print("*************  _comon()")
 		if not infodict['mode'] or not self.is_supported(infodict['mode']):
 			print("ERROR: CompressMap; %s mode: %s not correctly set!" \
 				% (self.loaded_type[0], infodict['mode']))
 			return False
 
-		#Avoid modifying the source dictionary
+		# Avoid modifying the source dictionary
 		cmdinfo = infodict.copy()
 
 		# obtain the pointer to the mode class to use
@@ -294,7 +294,7 @@ class CompressMap(object):
 				% (self.loaded_type[0], infodict['mode']))
 			return False
 
-		#Avoid modifying the source dictionary
+		# Avoid modifying the source dictionary
 		cmdinfo = infodict.copy()
 
 		# obtain the pointer to the mode class to use

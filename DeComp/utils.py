@@ -42,7 +42,7 @@ def subcmd(command, exc="", env={}, debug=False):
 		args.append("-x")
 	args.append("-c")
 	args.append(command)
-	print("$$$$$$$", args)
+	# print("$$$$$$$", args)
 	if debug:
 		print("***** subcmd(); args =", args)
 	try:
