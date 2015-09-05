@@ -23,11 +23,11 @@ from DeComp.utils import create_classes, subcmd
 
 
 class CompressMap(object):
-	fields = DEFINITION_FIELDS[:]
     '''Class for handling
     compression & decompression of archives'''
 
     '''fields: list of ordered field names for the (de)compression functions'''
+    fields = list(DEFINITION_FIELDS)
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,

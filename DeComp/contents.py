@@ -24,13 +24,13 @@ from DeComp.utils import create_classes, subcmd
 
 
 class ContentsMap(object):
-	fields = DEFINITION_FIELDS[:]
     '''Class to encompass all known commands to list
     the contents of an archive'''
 
 
     '''fields: list of ordered field names for the contents functions
     use ContentsMap.fields for the value legend'''
+    fields = list(DEFINITION_FIELDS)
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,

@@ -14,8 +14,16 @@ Maintained in full by:
 
 '''
 
-DEFINITION_FIELDS = ["func", "cmd", "args", "id", "extensions"]
-DEFINITION_TYPES =  [ str,    str,   list,   str,  list]
+from collections import OrderedDict
+
+DEFINITION_FIELDS = OrderedDict([
+    ("func", str),
+    ("cmd", str),
+    ("args", list),
+    ("id", str),
+    ("extensions", list)
+    ]
+)
 
 DEFINITION_HELP = '''
 The definition entries are to follow the the definition_types
