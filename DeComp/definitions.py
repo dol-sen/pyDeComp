@@ -69,21 +69,57 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "LBZIP2", ["tar.bz2"]
               ],
+    "lbzip2-x": [
+                    "_common", "tar",
+                    [
+                        "--xattr", "--xattrs-include=security.capability",
+                        "--xattrs-include=user.pax.flags", "-I", "lbzip2",
+                        "-cf", "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                    ],
+                    "LBZIP2", ["tar.bz2"]
+                ],
     "bzip2": [
                 "_common", "tar",
                 ["-cpjf", "%(filename)s", "-C", "%(basedir)s", "%(source)s"],
                 "BZIP2", ["tar.bz2"]
              ],
+    "bzip2-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-cpjf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s",
+                ],
+                "BZIP2", ["tar.bz2"]
+               ],
     "tar": [
                 "_common", "tar",
                 ["-cpf", "%(filename)s", "-C", "%(basedir)s", "%(source)s"],
                 "TAR", ["tar"]
            ],
+    "tar-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-cpf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "TAR", ["tar"]
+             ],
     "xz": [
             "_common", "tar",
             ["-cpJf", "%(filename)s", "-C", "%(basedir)s", "%(source)s"],
             "XZ", ["tar.xz"]
           ],
+    "xz-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-cpJf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "XZ", ["tar.xz"]
+            ],
     "pixz": [
                 "_common", "tar",
                 [
@@ -92,11 +128,29 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "PIXZ", ["tar.xz"]
             ],
+    "pixz-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-I", "pixz", "-cpf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "PIXZ", ["tar.xz"]
+              ],
     "gzip": [
                 "_common", "tar",
                 ["-cpzf", "%(filename)s", "-C", "%(basedir)s", "%(source)s"],
                 "GZIP", ["tar.gz"]
             ],
+    "gzip-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-cpzf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "GZIP", ["tar.gz"]
+              ],
     "squashfs": [
                     "_sqfs", "mksquashfs",
                     [
@@ -120,31 +174,85 @@ DECOMPRESS_DEFINITIONS = {
                 ["-I", "lbzip2", "-xpf", "%(source)s", "-C", "%(destination)s"],
                 "LBZIP2", ["tar.bz2", "bz2", "tbz2"]
               ],
+    "lbzip2-x": [
+                    "_common", "tar",
+                    [
+                        "--xattr", "--xattrs-include=security.capability",
+                        "--xattrs-include=user.pax.flags", "-I", "lbzip2",
+                        "-xpf", "%(source)s", "-C", "%(destination)s"
+                    ],
+                    "LBZIP2", ["tar.bz2", "bz2", "tbz2"]
+                ],
     "bzip2": [
                 "_common", "tar",
                 ["-xpf", "%(source)s", "-C", "%(destination)s"],
                 "BZIP2", ["tar.bz2", "bz2", "tbz2"]
              ],
+    "bzip2-x": [
+                    "_common", "tar",
+                    [
+                        "--xattr", "--xattrs-include=security.capability",
+                        "--xattrs-include=user.pax.flags", "-xpf", "%(source)s",
+                        "-C", "%(destination)s"
+                    ],
+                    "BZIP2", ["tar.bz2", "bz2", "tbz2"]
+               ],
     "tar": [
                 "_common", "tar",
                 ["-xpf", "%(source)s", "-C", "%(destination)s"],
                 "TAR", ["tar"]
            ],
+    "tar-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-xpf", "%(source)s",
+                    "-C", "%(destination)s"
+                ],
+                "TAR", ["tar"]
+             ],
     "xz": [
             "_common", "tar",
             ["-xpf", "%(source)s", "-C", "%(destination)s"],
             "XZ", ["tar.xz", "xz"]
           ],
+    "xz-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-xpf", "%(source)s",
+                    "-C", "%(destination)s"
+                ],
+                "XZ", ["tar.xz", "xz"]
+            ],
     "pixz": [
                 "_common", "tar",
                 ["-I", "pixz", "-xpf", "%(source)s", "-C", "%(destination)s"],
                 "PIXZ", ["tar.xz", "xz"]
             ],
+    "pixz-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-I", "pixz", "-xpf",
+                    "%(source)s", "-C", "%(destination)s"
+                ],
+                "PIXZ", ["tar.xz", "xz"]
+              ],
     "gzip": [
                 "_common", "tar",
                 ["-xpzf", "%(source)s", "-C", "%(destination)s"],
                 "GZIP", ["tar.gz", "gz"]
             ],
+    "gzip-x": [
+                "_common", "tar",
+                [
+                    "--xattr", "--xattrs-include=security.capability",
+                    "--xattrs-include=user.pax.flags", "-xpzf", "%(source)s",
+                    "-C", "%(destination)s"
+                ],
+                "GZIP", ["tar.gz", "gz"]
+              ],
     "squashfs": [
                     "_common", "unsquashfs",
                     ["-d", "%(destination)s", "%(basedir)s/%(source)s"],
@@ -157,6 +265,9 @@ DECOMPRESSOR_SEARCH_ORDER = [
     "pixz", "lbzip2", "squashfs", "gzip", "xz", "bzip2", "tar"
 ]
 
+DECOMPRESSOR_XATTR_SEARCH_ORDER = [
+    "pixz-x", "lbzip2-x", "squashfs", "gzip-x", "xz-x", "bzip2-x", "tar-x"
+]
 
 '''Configure this here in case it is ever changed.
 This is the only edit point required then.'''
