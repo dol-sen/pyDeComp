@@ -3,7 +3,7 @@
 import sys
 
 from distutils.core import setup
-from pyGPG import __version__, __license__
+from DeComp import __version__, __license__
 # this affects the names of all the directories we do stuff with
 sys.path.insert(0, './')
 
