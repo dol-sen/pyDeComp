@@ -308,21 +308,21 @@ CONTENTS_DEFINITIONS = {
     "isoinfo_l": [
                     "_common", "isoinfo",
                     ["-l", "-i", "%(source)s"],
-                    "ISOINFO", []
+                    "ISOINFO", ['.iso']
                  ],
     "isoinfo_f": [
                     "_common", "isoinfo",
                     ["-f", "-i", "%(source)s"],
-                    "ISOINFO", []
+                    "ISOINFO", ['.iso']
                  ],
-    #"squashfs": [
-                    #"_mountable", "mount",
-                    #[
-                        #"-o", "loop", "-t", "squashfs", "%(source)s",
-                        #"%(destination)s"
-                    #],
-                    #"SQUASHFS", ["squashfs", "sfs"]
-                #],
+    "squashfs": [
+                    "_mountable", "mount",
+                    [
+                        "-o", "loop", "-t", "squashfs", "%(source)s",
+                        "%(destination)s"
+                    ],
+                    "SQUASHFS", ["squashfs", "sfs"]
+                ],
 }
 
 # isoinfo_f should be a last resort only

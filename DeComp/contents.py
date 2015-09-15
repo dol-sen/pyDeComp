@@ -118,4 +118,4 @@ class ContentsMap(object):
 
     @staticmethod
     def _mountable(source, destination, cmd, args, verbose):
-        return 'Code ME!!!!!!'
+        return 'NOT IMPLEMENTED!!!!!!'
