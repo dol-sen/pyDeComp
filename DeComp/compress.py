@@ -88,6 +88,7 @@ class CompressMap(object):
             return False
         if auto_extension:
             infodict['auto-ext'] = True
+        # print("CompressMap, Running compression process", infodict['mode'])
         return self._run(infodict)
 
 
@@ -112,6 +113,7 @@ class CompressMap(object):
             if not infodict['mode']:
                 print(self.mode_error)
                 return False
+        # print("CompressMap, Running extraction process", infodict['mode'])
         return self._run(infodict)
 
 
@@ -160,12 +162,13 @@ class CompressMap(object):
         print("COMPRESS: determine_mode(), source = " + source)
         result = None
         for mode in self.search_order:
-            print("COMPRESS: determine_mode(), mode = " + mode, self.search_order)
+            # print("COMPRESS: determine_mode(), mode = " + mode, self.search_order)
             for ext in self._map[mode].extensions:
                 if source.endswith(ext):
                     result = mode
                     break
             if result:
+                print("COMPRESS: determine_mode(), mode = " + mode)
                 break
         if not result:
             print("COMPRESS: determine_mode(), failed to find a mode " +
