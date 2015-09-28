@@ -316,10 +316,9 @@ CONTENTS_DEFINITIONS = {
                     "ISOINFO", ['.iso']
                  ],
     "squashfs": [
-                    "_mountable", "mount",
+                    "_common", "unsquashfs",
                     [
-                        "-o", "loop", "-t", "squashfs", "%(source)s",
-                        "%(destination)s"
+                        "-ll", "%(source)s",
                     ],
                     "SQUASHFS", ["squashfs", "sfs"]
                 ],
