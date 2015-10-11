@@ -19,7 +19,8 @@ import os
 from subprocess import Popen, PIPE
 
 from DeComp.definitions import (CONTENTS_SEARCH_ORDER, DEFINITION_FIELDS,
-    EXTENSION_SEPARATOR)
+                                EXTENSION_SEPARATOR)
+from DeComp import log
 from DeComp.utils import create_classes, subcmd
 
 
@@ -28,19 +29,23 @@ class ContentsMap(object):
     the contents of an archive'''
 
 
-    '''fields: list of ordered field names for the contents functions
-    use ContentsMap.fields for the value legend'''
+    # fields: list of ordered field names for the contents functions
+    # use ContentsMap.fields for the value legend
     fields = list(DEFINITION_FIELDS)
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,
-            separator=EXTENSION_SEPARATOR, search_order=None):
+                 separator=EXTENSION_SEPARATOR, search_order=None, logger=None):
         '''Class init
 
         @param definitions: dictionary of
             Key:[function, cmd, cmd_args, Print/id string, extensions]
         @param env: environment to pass to the subprocess
         @param default_mode: string.  one of the defintions keys
+        @param separator: extension separation character
+        @param search_order: hte order to search for a matching module
+        @param logger: Optional loggin instance,
+                       default: an internal logging module, set logging.ERROR
         '''
         if definitions is None:
             definitions = {}
@@ -52,7 +57,9 @@ class ContentsMap(object):
         self.search_order = search_order or CONTENTS_SEARCH_ORDER
         if isinstance(self.search_order, str):
             self.search_order = self.search_order.split()
-        print("ContentsMap: __init__(), search_order = " + str(self.search_order))
+        self.logger = logger or log
+        self.logger.info("ContentsMap: __init__(), search_order = %s",
+                         str(self.search_order))
         # create the contents definitions namedtuple classes
         self._map = create_classes(definitions, self.fields)
 
@@ -83,10 +90,11 @@ class ContentsMap(object):
         @param source: string, file path of the file to determine
         @return string: the comtents mode to use on the source file
         '''
-        print("ContentsMap: determine_mode(), source = " + source)
+        self.logger.debug("ContentsMap: determine_mode(), source = %s", source)
         result = None
         for mode in self.search_order:
-            print("ContentsMap: determine_mode(), mode = " + mode, self.search_order)
+            self.logger.debug("ContentsMap: determine_mode(), mode = %s, %s",
+                              mode, self.search_order)
             for ext in self._map[mode].extensions:
                 if source.endswith(ext):
                     result = mode
@@ -94,13 +102,12 @@ class ContentsMap(object):
             if result:
                 break
         if not result:
-            print("ContentsMap: determine_mode(), failed to find a mode " +
-                "to use for: " + source)
+            self.logger.debug("ContentsMap: determine_mode(), failed to "
+                              "find a mode to use for: %s", source)
         return result
 
 
-    @staticmethod
-    def _common(source, destination, cmd, args, verbose):
+    def _common(self, source, destination, cmd, args, verbose):
         _cmd = [cmd]
         _cmd.extend((' '.join(args)
             % {'source': source, "destination": destination }).split())
@@ -110,9 +117,10 @@ class ContentsMap(object):
             result = "\n".join(results)
         except OSError as e:
             results = ''
-            print("ContentsMap: _common(); OSError:" , e, ' '.join(_cmd))
+            self.logger.error("ContentsMap: _common(); OSError: %s, %s",
+                              str(e), ' '.join(_cmd))
         if verbose:
-            print(result)
+            self.logger.info(result)
         return result
 
 

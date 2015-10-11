@@ -14,11 +14,10 @@ Maintained in full by:
 
 '''
 
-from __future__ import print_function
-
 import os
 
 from DeComp.definitions import DEFINITION_FIELDS, EXTENSION_SEPARATOR
+from DeComp import log
 from DeComp.utils import create_classes, subcmd
 
 
@@ -31,7 +30,7 @@ class CompressMap(object):
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,
-            separator=EXTENSION_SEPARATOR, search_order=None):
+                 separator=EXTENSION_SEPARATOR, search_order=None, logger=None):
         '''Class init
 
         @param definitions: dictionary of
@@ -61,13 +60,15 @@ class CompressMap(object):
         self.search_order = search_order or list(definitions)
         if isinstance(self.search_order, str):
             self.search_order = self.search_order.split()
-        print("COMPRESS: __init__(), search_order = " + str(self.search_order))
+        self.logger = logger or log
+        self.logger.info("COMPRESS: __init__(), search_order = %s",
+                         str(self.search_order))
         # create the (de)compression definition namedtuple classes
         self._map = create_classes(definitions, self.fields)
 
 
     def _compress(self, infodict=None, filename='', source=None,
-            basedir='.', mode=None, auto_extension=False):
+                  basedir='.', mode=None, auto_extension=False):
         '''Compression function
 
         @param infodict: optional dictionary of the next 4 parameters.
@@ -84,16 +85,17 @@ class CompressMap(object):
             infodict = self.create_infodict(source, None,
                 basedir, filename, mode or self.mode, auto_extension)
         if not infodict['mode']:
-            print(self.mode_error)
+            self.logger.error(self.mode_error)
             return False
         if auto_extension:
             infodict['auto-ext'] = True
-        # print("CompressMap, Running compression process", infodict['mode'])
+        self.logger.debug("CompressMap, Running compression process: %s",
+                          infodict['mode'])
         return self._run(infodict)
 
 
     def _extract(self, infodict=None, source=None, destination=None,
-            mode=None):
+                 mode=None):
         '''De-compression function
 
         @param infodict: optional dictionary of the next 3 parameters.
@@ -111,9 +113,10 @@ class CompressMap(object):
         if infodict['mode'] in ['auto']:
             infodict['mode'] = self.determine_mode(infodict['source'])
             if not infodict['mode']:
-                print(self.mode_error)
+                self.logger.error(self.mode_error)
                 return False
-        # print("CompressMap, Running extraction process", infodict['mode'])
+        self.logger.debug("CompressMap, Running extraction process %s",
+                          infodict['mode'])
         return self._run(infodict)
 
 
@@ -124,14 +127,17 @@ class CompressMap(object):
         @return boolean
         '''
         if not self.is_supported(infodict['mode']):
-            print("mode: %s is not supported in the current %s definitions" \
-                % (infodict['mode'], self.loaded_type[1]))
+            self.logger.error("mode: %s is not supported in the current %s "
+                              "definitions", infodict['mode'],
+                              self.loaded_type[1]
+                             )
             return False
         try:
             func = getattr(self, self._map[infodict['mode']].func)
             success = func(infodict)
         except AttributeError:
-            print("FAILED to find function '%s'" % str(self._map[infodict['mode']].func))
+            self.logger.error("FAILED to find function '%s'",
+                              str(self._map[infodict['mode']].func))
             return False
         #except Exception as e:
             #msg = "Error performing %s %s, " % (mode, self.loaded_type[0]) + \
@@ -159,25 +165,26 @@ class CompressMap(object):
         @param source: string, file path of the file to determine
         @return string: the decompressor mode to use on the source file
         '''
-        print("COMPRESS: determine_mode(), source = " + source)
+        self.logger.info("COMPRESS: determine_mode(), source = %s", source)
         result = None
         for mode in self.search_order:
-            # print("COMPRESS: determine_mode(), mode = " + mode, self.search_order)
+            self.logger.debug("COMPRESS: determine_mode(), mode = %s, %s",
+                              mode, self.search_order)
             for ext in self._map[mode].extensions:
                 if source.endswith(ext):
                     result = mode
                     break
             if result:
-                print("COMPRESS: determine_mode(), mode = " + mode)
+                self.logger.debug("COMPRESS: determine_mode(), mode = %s", mode)
                 break
         if not result:
-            print("COMPRESS: determine_mode(), failed to find a mode " +
-                "to use for: " + source)
+            self.logger.warning("COMPRESS: determine_mode(), failed to find a "
+                                "mode to use for: %s", source)
         return result
 
 
     def rsync(self, infodict=None, source=None, destination=None,
-            mode=None):
+              mode=None):
         '''Convienience function. Performs an rsync transfer
 
         @param infodict: dict as returned by this class's create_infodict()
@@ -200,10 +207,10 @@ class CompressMap(object):
         @param infodict: dict as returned by this class's create_infodict()
         @return boolean
         '''
-        # print("*************  _comon()")
         if not infodict['mode'] or not self.is_supported(infodict['mode']):
-            print("ERROR: CompressMap; %s mode: %s not correctly set!" \
-                % (self.loaded_type[0], infodict['mode']))
+            self.logger.error("ERROR: CompressMap; %s mode: %s not correctly "
+                              "set!", self.loaded_type[0], infodict['mode']
+                             )
             return False
 
         # Avoid modifying the source dictionary
@@ -227,7 +234,8 @@ class CompressMap(object):
 
 
     def create_infodict(self, source, destination=None, basedir=None,
-            filename='', mode=None, auto_extension=False, arch=None):
+                        filename='', mode=None, auto_extension=False,
+                        arch=None):
         '''Puts the source and destination paths into a dictionary
         for use in string substitution in the defintions
         %(source) and %(destination) fields embedded into the commands
@@ -279,7 +287,7 @@ class CompressMap(object):
         if self.is_supported(mode):
             if all_extensions:
                 return self._map[mode].extensions
-            else: #return the first one (default)
+            else:  # return the first one (default)
                 return self._map[mode].extensions[0]
         return ''
 
@@ -291,10 +299,11 @@ class CompressMap(object):
         @param infodict: dict as returned by this class's create_infodict()
         @return boolean
         '''
-        print("*************  _sqfs()")
+
         if not infodict['mode'] or not self.is_supported(infodict['mode']):
-            print("ERROR: CompressMap; %s mode: %s not correctly set!" \
-                % (self.loaded_type[0], infodict['mode']))
+            self.logger.error("ERROR: CompressMap; %s mode: %s not correctly "
+                              "set!", self.loaded_type[0], infodict['mode']
+                             )
             return False
 
         # Avoid modifying the source dictionary
@@ -312,7 +321,7 @@ class CompressMap(object):
         if not infodict['arch']:
             sqfs_opts.remove("-Xbcj")
             sqfs_opts.remove("%(arch)s")
-        opts = ' '.join(sqfs_opts) %(cmdinfo)
+        opts = ' '.join(sqfs_opts) % (cmdinfo)
         args = ' '.join([cmdlist.cmd, opts])
 
         # now run the (de)compressor command in a subprocess
