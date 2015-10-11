@@ -16,7 +16,7 @@ def create_classes(definitions, fields):
     '''This function dynamically creates the namedtuple classes which are
     used for the information they contain in a consistent manner.
 
-    @parm definitions: dict, of (de)compressor definitions
+    @param definitions: dict, of (de)compressor definitions
         see DEFINITION_FIELDS defined in this library.
     @param fields: list of the field names to create
     @return class_map: dictionary of key: namedtuple class instance
