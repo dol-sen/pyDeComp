@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 '''
 contents.py
 
@@ -114,7 +114,9 @@ class ContentsMap(object):
         try:
             proc = Popen(_cmd, stdout=PIPE, stderr=PIPE)
             results = proc.communicate()
-            result = "\n".join(results)
+            stdout = results[0].decode('UTF-8')
+            stderr = results[1].decode('UTF-8')
+            result = "\n".join([stdout, stderr])
         except OSError as e:
             results = ''
             self.logger.error("ContentsMap: _common(); OSError: %s, %s",
