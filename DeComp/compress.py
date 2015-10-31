@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 
-'''
+"""
 compress.py
 
 Utility class to hold and handle all possible compression
@@ -12,7 +13,7 @@ please send them along for inclusion in the main repo.
 Maintained in full by:
     Brian Dolbec <dolsen@gentoo.org>
 
-'''
+"""
 
 import os
 
@@ -22,22 +23,32 @@ from DeComp.utils import create_classes, subcmd
 
 
 class CompressMap(object):
-    '''Class for handling
-    compression & decompression of archives'''
+    """Class for handling
+    compression & decompression of archives"""
 
-    '''fields: list of ordered field names for the (de)compression functions'''
+    # fields: list of ordered field names for the (de)compression functions
     fields = list(DEFINITION_FIELDS)
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,
                  separator=EXTENSION_SEPARATOR, search_order=None, logger=None):
-        '''Class init
+        """Class init
 
-        @param definitions: dictionary of
+        :param definitions: dictionary of
             Key:[function, cmd, cmd_args, Print/id string, extensions]
-        @param env: environment to pass to the cmd subprocess
-        @param default_mode: string.  one of the defintions keys
-        '''
+        :type definitions: dictionary
+        :param env: environment to pass to the cmd subprocess
+        :type env: dictionary
+        :param default_mode: one of the definitions keys
+        :type default_mode: string
+        :param separator: filename extension separator
+        :type separator: string
+        :param search_order: optional mode search order
+        :type search_order: list of strings
+        :param logger: optional logging module instance,
+                       default: pyDecomp logging namespace instance
+        :type logger: logging
+        """
         if definitions is None:
             definitions = {}
             self.loaded_type = ["None", "No definitions loaded"]
@@ -69,21 +80,27 @@ class CompressMap(object):
 
     def _compress(self, infodict=None, filename='', source=None,
                   basedir='.', mode=None, auto_extension=False):
-        '''Compression function
+        """Compression function
 
-        @param infodict: optional dictionary of the next 4 parameters.
-        @param filename: optional string, name ot the file to make
-        @param source: optional string, path to a directory
-        @param destination: optional string, path a directory
-        @param mode: string, optional mode to use to (de)compress with
-        @param auto_extension: boolean, optional, enables or disables
+        :param infodict: optional dictionary of the next 4 parameters.
+        :type infodict: dictionary
+        :param filename: optional name of the file to make
+        :type filename: string
+        :param source: optional path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param mode: optional mode to use to (de)compress with
+        :type mode: string
+        :param auto_extension: optional, enables or disables
             adding the normaL file extension defined by the mode used.
             defaults to False
-        @return boolean
-        '''
+        :type auto_extension: boolean
+        :returns: boolean
+        """
         if not infodict:
-            infodict = self.create_infodict(source, None,
-                basedir, filename, mode or self.mode, auto_extension)
+            infodict = self.create_infodict(source, None, basedir, filename,
+                                            mode or self.mode, auto_extension)
         if not infodict['mode']:
             self.logger.error(self.mode_error)
             return False
@@ -96,14 +113,18 @@ class CompressMap(object):
 
     def _extract(self, infodict=None, source=None, destination=None,
                  mode=None):
-        '''De-compression function
+        """De-compression function
 
-        @param infodict: optional dictionary of the next 3 parameters.
-        @param source: optional string, path to a directory
-        @param destination: optional string, path a directory
-        @param mode: string, optional mode to use to (de)compress with
-        @return boolean
-        '''
+        :param infodict: optional dictionary of the next 3 parameters.
+        :type infodict: dictionary
+        :param source: optional path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param mode: optional mode to use to (de)compress with
+        :type mode: string
+        :returns: boolean
+        """
         if self.loaded_type[0] not in ["Decompression"]:
             return False
         if not infodict:
@@ -121,11 +142,12 @@ class CompressMap(object):
 
 
     def _run(self, infodict):
-        '''Internal function that runs the designated function
+        """Internal function that runs the designated function
 
-        @param infodict: dictionary of the next 3 parameters.
-        @return boolean
-        '''
+        :param infodict: optional dictionary of the next 3 parameters.
+        :type infodict: dictionary
+        :returns: boolean
+        """
         if not self.is_supported(infodict['mode']):
             self.logger.error("mode: %s is not supported in the current %s "
                               "definitions", infodict['mode'],
@@ -148,23 +170,26 @@ class CompressMap(object):
         return success
 
 
-    def get_extension(self, source):
-        '''Extracts the file extension string from the source file
+    @staticmethod
+    def get_extension(source):
+        """Extracts the file extension string from the source file
 
-        @param source: string, file path of the file to determine
-        @return string: file type extension of the source file
-        '''
+        :param source: path to the file
+        :type source: string
+        :returns: string: file type extension of the source file
+        """
         return os.path.splitext(source)[1]
 
 
     def determine_mode(self, source):
-        '''Uses the decompressor_search_order spec parameter and
+        """Uses the decompressor_search_order spec parameter and
         compares the decompressor's file extension strings
         with the source file and returns the mode to use for decompression.
 
-        @param source: string, file path of the file to determine
-        @return string: the decompressor mode to use on the source file
-        '''
+        :param source: file path of the file to determine
+        :type source: string
+        :returns: string: the decompressor mode to use on the source file
+        """
         self.logger.info("COMPRESS: determine_mode(), source = %s", source)
         result = None
         for mode in self.search_order:
@@ -185,14 +210,18 @@ class CompressMap(object):
 
     def rsync(self, infodict=None, source=None, destination=None,
               mode=None):
-        '''Convienience function. Performs an rsync transfer
+        """Convienience function. Performs an rsync transfer
 
-        @param infodict: dict as returned by this class's create_infodict()
-        @param source: optional string, path to a directory
-        @param destination: optional string, path a directory
-        @param mode: string, optional mode to use to (de)compress with
-        @return boolean
-        '''
+        :param infodict: optional dictionary of the next 3 parameters.
+        :type infodict: dictionary
+        :param source: optional path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param mode: optional mode to use to (de)compress with
+        :type mode: string
+        :returns: boolean
+        """
         if not infodict:
             if not mode:
                 mode = 'rsync'
@@ -201,12 +230,13 @@ class CompressMap(object):
 
 
     def _common(self, infodict):
-        '''Internal function.  Performs commonly supported
+        """Internal function.  Performs commonly supported
         compression or decompression commands.
 
-        @param infodict: dict as returned by this class's create_infodict()
-        @return boolean
-        '''
+        :param infodict: dict as returned by this class's create_infodict()
+        :type infodict: dictionary
+        :returns: boolean
+        """
         if not infodict['mode'] or not self.is_supported(infodict['mode']):
             self.logger.error("ERROR: CompressMap; %s mode: %s not correctly "
                               "set!", self.loaded_type[0], infodict['mode']
@@ -236,20 +266,28 @@ class CompressMap(object):
     def create_infodict(self, source, destination=None, basedir=None,
                         filename='', mode=None, auto_extension=False,
                         arch=None):
-        '''Puts the source and destination paths into a dictionary
+        """Puts the source and destination paths into a dictionary
         for use in string substitution in the defintions
         %(source) and %(destination) fields embedded into the commands
 
-        @param source: string, path to a directory
-        @param destination: string, path a directory
-        @param basedir: optional string, path a directory
-        @param filename: optional string
-        @param mode: string, optional mode to use to (de)compress with
-        @param auto_extension: boolean, optional, enables or disables
+        :param source: path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param basedir: optional path to a directory
+        :type basedir: string
+        :param filename: optional name of the file
+        :type filename: string
+        :param mode: optional mode to use to (de)compress with
+        :type mode: string
+        :param auto_extension: optional, enables or disables
             adding the normaL file extension defined by the mode used.
             defaults to False
-        @return dict:
-        '''
+        :type auto_extension: boolean
+        :param arch: optional arch to specify to the compressor
+        :type arch: string
+        :returns: dictionary
+        """
         return {
             'source': source,
             'destination': destination,
@@ -262,28 +300,35 @@ class CompressMap(object):
 
 
     def is_supported(self, mode):
-        '''Truth function to test the mode desired is supported
+        """Truth function to test the mode desired is supported
         in the definitions loaded
 
-        @param mode: string, mode to use to (de)compress with
-        @return boolean
-        '''
+        :param mode: string, mode to use to (de)compress with
+        :type mode: string
+        :returns: boolean
+        """
         return mode in list(self._map)
 
 
     @property
     def available_modes(self):
-        '''Convienence function to return the available modes'''
+        """Convienence function to return the available modes
+
+        :returns: list of modes supported
+        """
         return list(self._map)
 
 
     def extension(self, mode, all_extensions=False):
-        '''Returns the predetermined extension auto-ext added
+        """Returns the predetermined extension auto-ext added
         to the filename for compression.
 
-        @param mode: string
-        @return string
-        '''
+        :param mode: the compression mode
+        :type mode: string
+        :param all_extensions: optional, default: False
+        :type all_extensions: boolean
+        :returns: string
+        """
         if self.is_supported(mode):
             if all_extensions:
                 return self._map[mode].extensions
@@ -293,12 +338,13 @@ class CompressMap(object):
 
 
     def _sqfs(self, infodict):
-        '''Internal function.  Performs commonly supported
+        """Internal function.  Performs commonly supported
         compression or decompression commands.
 
-        @param infodict: dict as returned by this class's create_infodict()
-        @return boolean
-        '''
+        :param infodict: dict as returned by this class's create_infodict()
+        :type infodict: dictionary
+        :returns: boolean
+        """
 
         if not infodict['mode'] or not self.is_supported(infodict['mode']):
             self.logger.error("ERROR: CompressMap; %s mode: %s not correctly "

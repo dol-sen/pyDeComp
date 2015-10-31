@@ -1,5 +1,14 @@
+# -*- coding: utf-8 -*-
 
+# pylint:disable=invalid-name
+
+"""
+Logging module for the Decomp libraries
+This module can be overriden by the consumer application
+"""
+import os
 import logging
+import time
 
 logger = logging.getLogger('DeComp')
 logger.setLevel(logging.ERROR)
@@ -11,21 +20,28 @@ warning = logger.warning
 
 
 def set_logger(logpath='', level=None):
-    logger.setLevel(log_levels['INFO'])
+    """Logger intialization function
+
+    :param logpath: optional filepath to save log outpput to
+    :type logpath: string
+    :param level: logging level to set the file logger to
+    :type level: integer
+    """
+    logger.setLevel(logging.INFO)
     # create formatter and add it to the handlers
     log_format = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
     formatter = logging.Formatter(log_format)
     # add the handlers to logger
     if logpath:
-        ensure_dirs(logpath, mode=dirmode, fatal=True)
-        os.umask(filemask)
-        logname = os.path.join(logpath,
-            '%s-%s.log' % (namespace, time.strftime('%Y%m%d-%H:%M')))
+        if not os.path.exists(logpath):
+            raise
+        logname = os.path.join(logpath, '%s-%s.log'
+                               % ('DeComp', time.strftime('%Y%m%d-%H:%M')))
         file_handler = logging.FileHandler(logname)
         if level:
-            file_handler.setLevel(log_levels[level])
+            file_handler.setLevel(level)
         else:
-            file_handler.setLevel(log_levels['DEBUG'])
+            file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
     # create console handler with a higher log level

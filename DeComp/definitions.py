@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 
-'''
+"""
 definitions.py
 
 Definitions file to hold and handle all possible compression,
@@ -12,7 +13,7 @@ please send them along for inclusion in the main repo.
 Maintained in full by:
     Brian Dolbec <dolsen@gentoo.org>
 
-'''
+"""
 
 from collections import OrderedDict
 
@@ -25,7 +26,7 @@ DEFINITION_FIELDS = OrderedDict([
     ]
 )
 
-DEFINITION_HELP = '''
+DEFINITION_HELP = """
 The definition entries are to follow the the definition_types
 with the exception of the first entry "Type" which is a mode identifier
 for use in the class as a type ID and printable output string.
@@ -51,7 +52,7 @@ values during run time:
 "%(destination)s"    the destination file or directory
 "%(arch)s"           the arch filter to pass in  ie. Available filters: x86,
                      arm, armthumb, powerpc, sparc, ia64
-'''
+"""
 
 
 COMPRESS_DEFINITIONS = {
@@ -269,8 +270,8 @@ DECOMPRESSOR_XATTR_SEARCH_ORDER = [
     "pixz_x", "lbzip2_x", "squashfs", "gzip_x", "xz_x", "bzip2_x", "tar_x"
 ]
 
-'''Configure this here in case it is ever changed.
-This is the only edit point required then.'''
+"""Configure this here in case it is ever changed.
+This is the only edit point required then."""
 EXTENSION_SEPARATOR = '.'
 
 

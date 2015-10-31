@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 contents.py
 
 Utility class to hold and handle all possible contents
@@ -11,7 +11,7 @@ please send them along for inclusion in the main repo.
 Maintained in full by:
     Brian Dolbec <dolsen@gentoo.org>
 
-'''
+"""
 
 from __future__ import print_function
 
@@ -21,12 +21,12 @@ from subprocess import Popen, PIPE
 from DeComp.definitions import (CONTENTS_SEARCH_ORDER, DEFINITION_FIELDS,
                                 EXTENSION_SEPARATOR)
 from DeComp import log
-from DeComp.utils import create_classes, subcmd
+from DeComp.utils import create_classes
 
 
 class ContentsMap(object):
-    '''Class to encompass all known commands to list
-    the contents of an archive'''
+    """Class to encompass all known commands to list
+    the contents of an archive"""
 
 
     # fields: list of ordered field names for the contents functions
@@ -36,17 +36,23 @@ class ContentsMap(object):
 
     def __init__(self, definitions=None, env=None, default_mode=None,
                  separator=EXTENSION_SEPARATOR, search_order=None, logger=None):
-        '''Class init
+        """Class init
 
-        @param definitions: dictionary of
+        :param definitions: dictionary of
             Key:[function, cmd, cmd_args, Print/id string, extensions]
-        @param env: environment to pass to the subprocess
-        @param default_mode: string.  one of the defintions keys
-        @param separator: extension separation character
-        @param search_order: the order to search for a matching module
-        @param logger: Optional loggin instance,
-                       default: an internal logging module, set logging.ERROR
-        '''
+        :type definitions: dictionary
+        :param env: environment to pass to the subprocess
+        :type env: dictionary
+        :param default_mode: one of the defintions keys
+        :type default_mode: string
+        :param separator: filename extension separator
+        :type separator: string
+        :param search_order: optional mode search order
+        :type search_order: list of strings
+        :param logger: optional logging module instance,
+                       default: pyDecomp logging namespace instance
+        :type logger: logging
+        """
         if definitions is None:
             definitions = {}
         self.env = env or {}
@@ -65,31 +71,45 @@ class ContentsMap(object):
 
 
     def contents(self, source, destination, mode="auto", verbose=False):
+        """Generate the contens list of the archive
 
+        :param source: optional path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param mode: optional mode to use to (de)compress with
+        :type mode: string
+        :param verbose: toggle
+        :type verbose: boolean
+        :returns: string, list of the contents
+        """
         if mode in ['auto']:
             mode = self.determine_mode(source)
         func = getattr(self, '%s' % self._map[mode].func)
         return func(source, destination,
-            self._map[mode].cmd, self._map[mode].args, verbose)
+                    self._map[mode].cmd, self._map[mode].args, verbose)
 
 
-    def get_extension(self, source):
-        '''Extracts the file extension string from the source file
+    @staticmethod
+    def get_extension(source):
+        """Extracts the file extension string from the source file
 
-        @param source: string, file path of the file to determine
-        @return string: file type extension of the source file
-        '''
+        :param source: path to the archive
+        :type source: string
+        :returns: string: file type extension of the source file
+        """
         return os.path.splitext(source)[1]
 
 
     def determine_mode(self, source):
-        '''Uses the search_order spec parameter and
-        compares the contents file extension strings
-        with the source file and returns the mode to use for decompression.
+        """Uses the search_order spec parameter and compares the contents
+        file extension strings with the source file and returns the mode to
+        use for contents generation.
 
-        @param source: string, file path of the file to determine
-        @return string: the comtents mode to use on the source file
-        '''
+        :param source: file path of the file to determine
+        :type source: string
+        :returns: string: the contents generation mode to use on the source file
+        """
         self.logger.debug("ContentsMap: determine_mode(), source = %s", source)
         result = None
         for mode in self.search_order:
@@ -108,19 +128,35 @@ class ContentsMap(object):
 
 
     def _common(self, source, destination, cmd, args, verbose):
+        """General purpose controller to generate the contents listing
+
+        :param source: optional path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param cmd: definition command to use to generate the contents with
+        :type cmd: string
+        :param args: optioanl command arguments
+        :type args: list
+        :param verbose: toggle
+        :type verbose: boolean
+        :returns: string, list of the contents
+        """
         _cmd = [cmd]
         _cmd.extend((' '.join(args)
-            % {'source': source, "destination": destination }).split())
+                     % {'source': source, "destination": destination}
+                    ).split()
+                   )
         try:
             proc = Popen(_cmd, stdout=PIPE, stderr=PIPE)
             results = proc.communicate()
             stdout = results[0].decode('UTF-8')
             stderr = results[1].decode('UTF-8')
             result = "\n".join([stdout, stderr])
-        except OSError as e:
+        except OSError as error:
             results = ''
             self.logger.error("ContentsMap: _common(); OSError: %s, %s",
-                              str(e), ' '.join(_cmd))
+                              str(error), ' '.join(_cmd))
         if verbose:
             self.logger.info(result)
         return result
@@ -128,4 +164,18 @@ class ContentsMap(object):
 
     @staticmethod
     def _mountable(source, destination, cmd, args, verbose):
+        """Controll module to mount/umount a mountable filesystem
+
+        :param source: optional path to the directory
+        :type source: string
+        :param destination: optional path to the directory
+        :type destination: string
+        :param cmd: definition command to use to generate the contents with
+        :type cmd: string
+        :param args: optioanl command arguments
+        :type args: list
+        :param verbose: toggle
+        :type verbose: boolean
+        :returns: string, list of the contents
+        """
         return 'NOT IMPLEMENTED!!!!!!'
