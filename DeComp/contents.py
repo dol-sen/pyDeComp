@@ -154,7 +154,7 @@ class ContentsMap(object):
             stderr = results[1].decode('UTF-8')
             result = "\n".join([stdout, stderr])
         except OSError as error:
-            results = ''
+            result = ''
             self.logger.error("ContentsMap: _common(); OSError: %s, %s",
                               str(error), ' '.join(_cmd))
         if verbose:
