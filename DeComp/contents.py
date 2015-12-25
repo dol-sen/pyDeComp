@@ -21,7 +21,7 @@ from subprocess import Popen, PIPE
 from DeComp.definitions import (CONTENTS_SEARCH_ORDER, DEFINITION_FIELDS,
                                 EXTENSION_SEPARATOR)
 from DeComp import log
-from DeComp.utils import create_classes
+from DeComp.utils import create_classes, check_available
 
 
 class ContentsMap(object):
@@ -68,6 +68,10 @@ class ContentsMap(object):
                          str(self.search_order))
         # create the contents definitions namedtuple classes
         self._map = create_classes(definitions, self.fields)
+        binaries = set()
+        for mode in self.search_order:
+            binaries.update(self._map[mode].binaries)
+        self.available = check_available(binaries)
 
 
     def contents(self, source, destination, mode="auto", verbose=False):
@@ -116,7 +120,8 @@ class ContentsMap(object):
             self.logger.debug("ContentsMap: determine_mode(), mode = %s, %s",
                               mode, self.search_order)
             for ext in self._map[mode].extensions:
-                if source.endswith(ext):
+                if source.endswith(ext) and \
+                   self._map[mode].enabled(self.available):
                     result = mode
                     break
             if result:

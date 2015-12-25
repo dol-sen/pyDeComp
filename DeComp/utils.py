@@ -7,11 +7,21 @@ from __future__ import print_function
 
 import sys
 from collections import namedtuple
-from subprocess import Popen
+from subprocess import Popen, PIPE
 
 from DeComp import log
 
 BASH_CMD = "/bin/bash"
+
+
+def _is_available(self, available_binaries):
+    """Private function for the named tuple classes
+
+    :param available_binaries: the confirmed installed binaries
+    :type: available_binaries: set
+    :returns: boolean
+    """
+    return self.binaries.issubset(available_binaries)
 
 
 def create_classes(definitions, fields):
@@ -31,6 +41,7 @@ def create_classes(definitions, fields):
         obj = namedtuple(name, fields)
         # reduce memory used by limiting it to the predefined fields variables
         obj.__slots__ = ()
+        obj.enabled = _is_available
         # now add the instance to our map
         class_map[name] = obj._make(definitions[name])
     del obj
@@ -66,3 +77,23 @@ def subcmd(command, exc="", env=None, debug=False):
         log.debug("subcmd() NON-zero return value from: %s", exc)
         return False
     return True
+
+def check_available(commands):
+    """Checks for the available binaries
+
+    :param commands: the binaries to check for their existence
+    :type commands: list
+    :returns: set of the installed binaries available
+    """
+    cmd = ["which"]
+    cmd.extend(commands)
+    try:
+        proc = Popen(cmd, stdout=PIPE)
+        results = proc.communicate()
+        stdout = results[0].decode('UTF-8')
+    except OSError as error:
+        stdout = ''
+        log.error("utils: check_available(); OSError: %s, %s",
+                  str(error), ' '.join(cmd))
+    available = set([x.rsplit('/', 1)[1] for x in stdout.split('\n') if x])
+    return available

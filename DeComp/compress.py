@@ -19,7 +19,7 @@ import os
 
 from DeComp.definitions import DEFINITION_FIELDS, EXTENSION_SEPARATOR
 from DeComp import log
-from DeComp.utils import create_classes, subcmd
+from DeComp.utils import create_classes, subcmd, check_available
 
 
 class CompressMap(object):
@@ -76,6 +76,10 @@ class CompressMap(object):
                          str(self.search_order))
         # create the (de)compression definition namedtuple classes
         self._map = create_classes(definitions, self.fields)
+        binaries = set()
+        for mode in self.search_order:
+            binaries.update(self._map[mode].binaries)
+        self.available = check_available(binaries)
 
 
     def _compress(self, infodict=None, filename='', source=None,
@@ -196,7 +200,8 @@ class CompressMap(object):
             self.logger.debug("COMPRESS: determine_mode(), mode = %s, %s",
                               mode, self.search_order)
             for ext in self._map[mode].extensions:
-                if source.endswith(ext):
+                if source.endswith(ext) and \
+                   self._map[mode].enabled(self.available):
                     result = mode
                     break
             if result:
