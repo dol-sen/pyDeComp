@@ -159,7 +159,12 @@ class CompressMap(object):
                              )
             return False
         try:
-            func = getattr(self, self._map[infodict['mode']].func)
+            # see if it is an internal function name (string)
+            # or an external function pointer
+            if isinstance(self._map[infodict['mode']].func, str):
+                func = getattr(self, self._map[infodict['mode']].func)
+            else:
+                func = self._map[infodict['mode']].func
             success = func(infodict)
         except AttributeError:
             self.logger.error("FAILED to find function '%s'",

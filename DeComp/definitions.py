@@ -37,6 +37,12 @@ Definiton entries are composed of the following:
     eg:
     "tar": [             <== access key: list of DEFINITION_FIELDS
             "_common",   <== the class function that runs the external utility
+                             If it is a string, then it will use the internal
+                             function of that name.
+                             If it is not, then it will assume it is a pointer
+                             to an external function and run it.  That function
+                             must accept the same parameters as the internal
+                             class functions do.
             "tar",       <== the external utility command
             ["-cpf", "%(filename)s", "-C", "%(basedir)s", "%(source)s"],
                          ^^  a list of the arguments to pass to the utility
