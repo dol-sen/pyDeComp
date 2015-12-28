@@ -91,10 +91,10 @@ class ContentsMap(object):
             mode = self.determine_mode(source)
         # see if it is an internal function name (string)
         # or an external function pointer
-        if isinstance(self._map[infodict['mode']].func, str):
+        if isinstance(self._map[mode].func, str):
             func = getattr(self, '%s' % self._map[mode].func)
         else:
-            func = self._map[infodict['mode']].func
+            func = self._map[mode].func
         return func(source, destination,
                     self._map[mode].cmd, self._map[mode].args, verbose)
 
