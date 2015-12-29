@@ -383,3 +383,24 @@ class CompressMap(object):
         # now run the (de)compressor command in a subprocess
         # return it's success/fail return value
         return subcmd(args, cmdlist.id, env=self.env)
+
+
+    def search_order_extensions(self, search_order):
+        """Returns the ordered extension list determined by
+        the search order for the (de)compression.
+
+        :param search_order:
+        :type search_order: list of strings
+        :returns: an ordered list
+        """
+        seen = set()
+        ext_list = []
+        for mode in search_order:
+            if self.is_supported(mode):
+                for ext in self._map[mode].extensions:
+                    if ext not in seen:
+                        ext_list.append(ext)
+                        seen.add(ext)
+        return ext_list
+
+
