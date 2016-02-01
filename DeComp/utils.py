@@ -87,6 +87,7 @@ def check_available(commands):
     """
     cmd = ["which"]
     cmd.extend(commands)
+    proc = None
     try:
         proc = Popen(cmd, stdout=PIPE, stderr=Pipe)
         results = proc.communicate()
@@ -96,7 +97,9 @@ def check_available(commands):
         log.error("utils: check_available(); OSError: %s, %s",
                   str(error), ' '.join(cmd))
     finally:
-        proc.stdout.close()
-        proc.stderr.close()
+        if proc:
+            for pipe in [proc.stdout, proc.stderr]:
+                if pipe:
+                    pipe.close()
     available = set([x.rsplit('/', 1)[1] for x in stdout.split('\n') if x])
     return available
