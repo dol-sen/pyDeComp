@@ -88,12 +88,15 @@ def check_available(commands):
     cmd = ["which"]
     cmd.extend(commands)
     try:
-        proc = Popen(cmd, stdout=PIPE)
+        proc = Popen(cmd, stdout=PIPE, stderr=Pipe)
         results = proc.communicate()
         stdout = results[0].decode('UTF-8')
     except OSError as error:
         stdout = ''
         log.error("utils: check_available(); OSError: %s, %s",
                   str(error), ' '.join(cmd))
+    finally:
+        proc.stdout.close()
+        proc.stderr.close()
     available = set([x.rsplit('/', 1)[1] for x in stdout.split('\n') if x])
     return available
