@@ -89,7 +89,7 @@ def check_available(commands):
     cmd.extend(commands)
     proc = None
     try:
-        proc = Popen(cmd, stdout=PIPE, stderr=Pipe)
+        proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
         results = proc.communicate()
         stdout = results[0].decode('UTF-8')
     except OSError as error:
