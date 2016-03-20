@@ -19,7 +19,7 @@ import os
 from subprocess import Popen, PIPE
 
 from DeComp.definitions import (CONTENTS_SEARCH_ORDER, DEFINITION_FIELDS,
-                                EXTENSION_SEPARATOR)
+                                EXTENSION_SEPARATOR, COMPRESSOR_PROGRAM_OPTIONS)
 from DeComp import log
 from DeComp.utils import create_classes, check_available
 
@@ -35,7 +35,8 @@ class ContentsMap(object):
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,
-                 separator=EXTENSION_SEPARATOR, search_order=None, logger=None):
+                 separator=EXTENSION_SEPARATOR, search_order=None, logger=None,
+                 comp_prog=COMPRESSOR_PROGRAM_OPTIONS['linux']):
         """Class init
 
         :param definitions: dictionary of
@@ -64,6 +65,7 @@ class ContentsMap(object):
         if isinstance(self.search_order, str):
             self.search_order = self.search_order.split()
         self.logger = logger or log
+        self.comp_prog = comp_prog
         self.logger.info("ContentsMap: __init__(), search_order = %s",
                          str(self.search_order))
         # create the contents definitions namedtuple classes
@@ -154,7 +156,9 @@ class ContentsMap(object):
         """
         _cmd = [cmd]
         _cmd.extend((' '.join(args)
-                     % {'source': source, "destination": destination}
+                     % {'source': source, "destination": destination,
+                        'comp_prog': self.comp_prog,
+                       }
                     ).split()
                    )
         try:

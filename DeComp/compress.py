@@ -17,7 +17,8 @@ Maintained in full by:
 
 import os
 
-from DeComp.definitions import DEFINITION_FIELDS, EXTENSION_SEPARATOR
+from DeComp.definitions import (DEFINITION_FIELDS, EXTENSION_SEPARATOR,
+    COMPRESSOR_PROGRAM_OPTIONS)
 from DeComp import log
 from DeComp.utils import create_classes, subcmd, check_available
 
@@ -31,7 +32,8 @@ class CompressMap(object):
 
 
     def __init__(self, definitions=None, env=None, default_mode=None,
-                 separator=EXTENSION_SEPARATOR, search_order=None, logger=None):
+                 separator=EXTENSION_SEPARATOR, search_order=None, logger=None,
+                 comp_prog=COMPRESSOR_PROGRAM_OPTIONS['linux']):
         """Class init
 
         :param definitions: dictionary of
@@ -48,6 +50,9 @@ class CompressMap(object):
         :param logger: optional logging module instance,
                        default: pyDecomp logging namespace instance
         :type logger: logging
+        :param comp_prog: the tar option string to use for the commpressor program
+                          bsd's tar is different that linux's tar default: '-I'
+        :type comp_prog: string
         """
         if definitions is None:
             definitions = {}
@@ -72,6 +77,7 @@ class CompressMap(object):
         if isinstance(self.search_order, str):
             self.search_order = self.search_order.split()
         self.logger = logger or log
+        self.comp_prog = comp_prog
         self.logger.info("COMPRESS: __init__(), search_order = %s",
                          str(self.search_order))
         # create the (de)compression definition namedtuple classes
@@ -83,7 +89,8 @@ class CompressMap(object):
 
 
     def _compress(self, infodict=None, filename='', source=None,
-                  basedir='.', mode=None, auto_extension=False):
+                  basedir='.', mode=None, auto_extension=False,
+                  arch=None, other_options=None):
         """Compression function
 
         :param infodict: optional dictionary of the next 4 parameters.
@@ -104,10 +111,17 @@ class CompressMap(object):
         """
         if not infodict:
             infodict = self.create_infodict(source, None, basedir, filename,
-                                            mode or self.mode, auto_extension)
+                                            mode or self.mode, auto_extension,
+                                            arch, other_options)
         if not infodict['mode']:
             self.logger.error(self.mode_error)
             return False
+        if infodict['mode'].endswith("_x"):
+            self.logger.warning("Deprecation Warning, all (de)compressor modes "
+                                "ending with '_x'")
+            self.logger.warning("Please use the 'other_options' capability in "
+                                "the non '*_x' modes")
+        self.logger.debug("other_options: %s", infodict['other_options'])
         if auto_extension:
             infodict['auto-ext'] = True
         self.logger.debug("CompressMap, Running compression process: %s",
@@ -116,7 +130,7 @@ class CompressMap(object):
 
 
     def _extract(self, infodict=None, source=None, destination=None,
-                 mode=None):
+                 mode=None, other_options=None):
         """De-compression function
 
         :param infodict: optional dictionary of the next 3 parameters.
@@ -131,8 +145,17 @@ class CompressMap(object):
         """
         if self.loaded_type[0] not in ["Decompression"]:
             return False
+        if mode or infodict['mode']:
+            mode = mode or infodict['mode']
+            if mode.endswith("_x"):
+                self.logger.warning("Deprecation Warning, all (de)compressor "
+                                    "modes ending with '_x'")
+                self.logger.warning("Please use the 'other_options' "
+                                    "capability in the non '*_x' modes")
+        self.logger.debug("other_options: %s", infodict['other_options'])
         if not infodict:
-            infodict = self.create_infodict(source, destination, mode=mode)
+            infodict = self.create_infodict(source, destination, mode=mode,
+                                            other_options=other_options)
         if infodict['mode'] in [None]:
             infodict['mode'] = self.mode or 'auto'
         if infodict['mode'] in ['auto']:
@@ -158,16 +181,21 @@ class CompressMap(object):
                               self.loaded_type[1]
                              )
             return False
+        _func = self._map[infodict['mode']].func
         try:
             # see if it is an internal function name (string)
             # or an external function pointer
-            if isinstance(self._map[infodict['mode']].func, str):
-                func = getattr(self, self._map[infodict['mode']].func)
+            if isinstance(_func, str):
+                self.logger.debug("Compress: _run() func is a string: '%s'",
+                                  _func)
+                func = getattr(self, _func, None)
             else:
-                func = self._map[infodict['mode']].func
+                self.logger.debug("Compress: _run(); func is a function: '%s'",
+                                  _func)
+                func = _func
             success = func(infodict)
         except AttributeError:
-            self.logger.error("FAILED to find function '%s'",
+            self.logger.error("FAILED to find or run function '%s'",
                               str(self._map[infodict['mode']].func))
             return False
         #except Exception as e:
@@ -264,10 +292,13 @@ class CompressMap(object):
             cmdinfo['filename'] += self.extension_separator + \
                 self.extension(cmdinfo["mode"])
 
+        cmdargs = self._sub_other_options(cmdlist.args, cmdinfo)
+
         # Do the string substitution
-        opts = ' '.join(cmdlist.args) %(cmdinfo)
+        opts = ' '.join(cmdargs) %(cmdinfo)
         args = ' '.join([cmdlist.cmd, opts])
 
+        self.logger.debug("COMPRESS: _common(); command args: %s", args)
         # now run the (de)compressor command in a subprocess
         # return it's success/fail return value
         return subcmd(args, cmdlist.id, env=self.env)
@@ -275,7 +306,7 @@ class CompressMap(object):
 
     def create_infodict(self, source, destination=None, basedir=None,
                         filename='', mode=None, auto_extension=False,
-                        arch=None):
+                        arch=None, other_options=None):
         """Puts the source and destination paths into a dictionary
         for use in string substitution in the defintions
         %(source) and %(destination) fields embedded into the commands
@@ -296,6 +327,9 @@ class CompressMap(object):
         :type auto_extension: boolean
         :param arch: optional arch to specify to the compressor
         :type arch: string
+        :param other_options: other optional args to pass if the definition
+                              supports that attribute
+        :type other_options, string or list
         :returns: dictionary
         """
         return {
@@ -306,6 +340,8 @@ class CompressMap(object):
             'arch': arch or '',
             'mode': mode or self.mode,
             'auto-ext': auto_extension,
+            'other_options': other_options,
+            'comp_prog': self.comp_prog
             }
 
 
@@ -373,7 +409,7 @@ class CompressMap(object):
             cmdinfo['filename'] += self.extension_separator + \
                 self.extension(cmdinfo["mode"])
 
-        sqfs_opts = cmdlist.args
+        sqfs_opts = self._sub_other_options(cmdlist.args, cmdinfo)
         if not infodict['arch']:
             sqfs_opts.remove("-Xbcj")
             sqfs_opts.remove("%(arch)s")
@@ -403,4 +439,23 @@ class CompressMap(object):
                         seen.add(ext)
         return ext_list
 
-
+    @staticmethod
+    def _sub_other_options(args, cmdinfo):
+        '''Substitute any other_options in the '''
+        cmdargs = args[:]
+        # replace the other_options placeholder
+        if 'other_options' in cmdargs:
+            if isinstance(cmdinfo['other_options'], str):
+                if not cmdinfo['other_options']:
+                    cmdargs.replace('other_options', '')
+                else:
+                    cmdargs.replace('other_options', cmdinfo['other_options'])
+            else: # assume it is an iterable
+                if not cmdinfo['other_options']:
+                    cmdargs.remove('other_options')
+                else:
+                    index = cmdargs.index('other_options')
+                    cmdargs[index] = ' '.join(cmdinfo['other_options'])
+        # remove any null strings
+        cmdargs = [x for x in cmdargs if x]
+        return cmdargs
