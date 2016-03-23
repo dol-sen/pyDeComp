@@ -133,6 +133,30 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "BZIP2", ["tar.bz2"], {"tar", "bzip2"},
                ],
+    "lzip": [
+                "_common", "tar",
+                [   "other_options",
+                    "%(comp_prog)s", "lzip", "-cf", "%(filename)s", "-C",
+                    "%(basedir)s", "%(source)s"
+                ],
+                "LZIP", ["tar.lzip"], {"tar", "lzip"},
+              ],
+    "lzma": [
+                "_common", "tar",
+                [   "other_options",
+                    "%(comp_prog)s", "lzma", "-cf", "%(filename)s", "-C",
+                    "%(basedir)s", "%(source)s"
+                ],
+                "LZ", ["tar.lzma"], {"tar", "lzma"},
+              ],
+    "lzop": [
+                "_common", "tar",
+                [   "other_options",
+                    "%(comp_prog)s", "lzop", "-cf", "%(filename)s", "-C",
+                    "%(basedir)s", "%(source)s"
+                ],
+                "LZOP", ["tar.lzop"], {"tar", "lzop"},
+              ],
     "tar": [
                 "_common", "tar",
                 [
@@ -262,6 +286,30 @@ DECOMPRESS_DEFINITIONS = {
                     ],
                     "BZIP2", ["tar.bz2", "bz2", "tbz2"], {"tar", "bzip2"},
                ],
+    "lzip": [
+                "_common", "tar",
+                [   "other_options",
+                    "%(comp_prog)s", "lzip", "-cf", "%(filename)s", "-C",
+                    "%(basedir)s", "%(source)s"
+                ],
+                "LZIP", ["tar.lzip"], {"tar", "lzip"},
+              ],
+    "lzma": [
+                "_common", "tar",
+                [   "other_options",
+                    "%(comp_prog)s", "lzma", "-cf", "%(filename)s", "-C",
+                    "%(basedir)s", "%(source)s"
+                ],
+                "LZ", ["tar.lzma"], {"tar", "lzma"},
+              ],
+    "lzop": [
+                "_common", "tar",
+                [   "other_options",
+                    "%(comp_prog)s", "lzop", "-cf", "%(filename)s", "-C",
+                    "%(basedir)s", "%(source)s"
+                ],
+                "LZOP", ["tar.lzop"], {"tar", "lzop"},
+              ],
     "tar": [
                 "_common", "tar",
                 ["other_options", "-xpf", "%(source)s", "-C", "%(destination)s"],
