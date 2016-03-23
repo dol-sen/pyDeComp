@@ -77,7 +77,15 @@ COMPRESSOR_PROGRAM_OPTIONS = {"linux": "-I",
                               "bsd": "--use-compress-program",
                              }
 
-DEFAULT_TAR="linux-tar"
+DECOMPRESSOR_PROGRAM_OPTIONS = {"linux": "",
+                                "bsd": "-d",
+                               }
+
+LIST_XATTRS_OPTIONS = {"linux": "--xattrs",
+                       "bsd": "",
+                      }
+
+DEFAULT_TAR="linux"
 
 COMPRESS_DEFINITIONS = {
     "Type": ["Compression", "Compression definitions loaded"],
@@ -217,8 +225,9 @@ DECOMPRESS_DEFINITIONS = {
     "lbzip2": [
                 "_common", "tar",
                 [
-                    "other_options", "%(comp_prog)s", "lbzip2", "-xpf",
-                    "%(source)s", "-C", "%(destination)s"
+                    "other_options", "%(comp_prog)s", "lbzip2",
+                    "%(decomp_opt)s", "-xpf", "%(source)s",
+                    "-C", "%(destination)s"
                 ],
                 "LBZIP2", ["tar.bz2", "bz2", "tbz2"], {"tar", "lbzip2"},
               ],
@@ -279,8 +288,8 @@ DECOMPRESS_DEFINITIONS = {
     "pixz": [
                 "_common", "tar",
                 [
-                    "other_options", "%(comp_prog)s", "pixz", "-xpf",
-                    "%(source)s", "-C", "%(destination)s"
+                    "other_options", "%(comp_prog)s", "pixz", "%(decomp_opt)s",
+                    "-xpf", "%(source)s", "-C", "%(destination)s"
                 ],
                 "PIXZ", ["tar.xz", "xz"], {"tar", "pixz"},
             ],
@@ -337,32 +346,36 @@ EXTENSION_SEPARATOR = '.'
 CONTENTS_DEFINITIONS = {
     "tar": [
                 "_common", "tar",
-                ["--xattrs", "-tvf", "%(source)s"],
+                ["%(list_xattrs_opt)s", "-tvf", "%(source)s"],
                 "TAR", [".tar"], {"tar"},
            ],
     "gzip": [
                 "_common", "tar",
-                ["--xattrs", "-tvzf", "%(source)s"],
+                ["%(list_xattrs_opt)s", "-tvzf", "%(source)s"],
                 "GZIP", [".tgz", ".tar.gz", "gz"], {"tar"},
             ],
     "lbzip2": [
                 "_common", "tar",
-                ["--xattrs", "%(comp_prog)s", "lbzip2", "-tvf", "%(source)s"],
+                ["%(list_xattrs_opt)s", "%(comp_prog)s", "lbzip2",
+                 "%(decomp_opt)s", "-tvf", "%(source)s"
+                ],
                 "LBZIP2", [".tbz2", "bz2", ".tar.bz2"], {"tar", "lbzip2"},
               ],
     "bzip2": [
                 "_common", "tar",
-                ["--xattrs", "-tvf", "%(source)s"],
+                ["%(list_xattrs_opt)s", "-tvf", "%(source)s"],
                 "BZIP2", [".tbz2", "bz2", ".tar.bz2"], {"tar", "bzip2"},
              ],
     "xz": [
             "_common", "tar",
-            ["--xattrs", "-tvf", "%(source)s"],
+            ["%(list_xattrs_opt)s", "-tvf", "%(source)s"],
             "XZ", ["tar.xz", "xz"], {"tar"},
           ],
     "pixz": [
                 "_common", "tar",
-                ["--xattrs", "%(comp_prog)s", "pixz", "-tvf", "%(source)s"],
+                ["%(list_xattrs_opt)s", "%(comp_prog)s", "pixz",
+                 "%(decomp_opt)s", "-tvf", "%(source)s"
+                ],
                 "PIXZ", ["tar.xz", "xz"], {"tar", "pixz"},
             ],
     "isoinfo_l": [

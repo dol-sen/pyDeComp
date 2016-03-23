@@ -19,7 +19,10 @@ import os
 from subprocess import Popen, PIPE
 
 from DeComp.definitions import (CONTENTS_SEARCH_ORDER, DEFINITION_FIELDS,
-                                EXTENSION_SEPARATOR, COMPRESSOR_PROGRAM_OPTIONS)
+                                EXTENSION_SEPARATOR, COMPRESSOR_PROGRAM_OPTIONS,
+                                DECOMPRESSOR_PROGRAM_OPTIONS,
+                                LIST_XATTRS_OPTIONS
+                               )
 from DeComp import log
 from DeComp.utils import create_classes, check_available
 
@@ -36,7 +39,9 @@ class ContentsMap(object):
 
     def __init__(self, definitions=None, env=None, default_mode=None,
                  separator=EXTENSION_SEPARATOR, search_order=None, logger=None,
-                 comp_prog=COMPRESSOR_PROGRAM_OPTIONS['linux']):
+                 comp_prog=COMPRESSOR_PROGRAM_OPTIONS['linux'],
+                 decomp_opt=DECOMPRESSOR_PROGRAM_OPTIONS['linux'],
+                 list_xattrs_opt=LIST_XATTRS_OPTIONS['linux']):
         """Class init
 
         :param definitions: dictionary of
@@ -66,6 +71,8 @@ class ContentsMap(object):
             self.search_order = self.search_order.split()
         self.logger = logger or log
         self.comp_prog = comp_prog
+        self.decomp_opt = decomp_opt
+        self.list_xattrs_opt = list_xattrs_opt
         self.logger.info("ContentsMap: __init__(), search_order = %s",
                          str(self.search_order))
         # create the contents definitions namedtuple classes
@@ -158,6 +165,8 @@ class ContentsMap(object):
         _cmd.extend((' '.join(args)
                      % {'source': source, "destination": destination,
                         'comp_prog': self.comp_prog,
+                        'decomp_opt': self.decomp_opt,
+                        'list_xattrs_opt': self.list_xattrs_opt,
                        }
                     ).split()
                    )
