@@ -264,8 +264,8 @@ DECOMPRESS_DEFINITIONS = {
                     "_common", "tar",
                     [
                         "--xattrs", "--xattrs-include=security.capability",
-                        "--xattrs-include=user.pax.flags", "%(comp_prog)s", "lbzip2",
-                        "-xpf", "%(source)s", "-C", "%(destination)s"
+                        "--xattrs-include=user.pax.flags", "%(comp_prog)s",
+                        "lbzip2", "-xpf", "%(source)s", "-C", "%(destination)s"
                     ],
                     "LBZIP2", ["tar.bz2", "bz2", "tbz2"], {"tar", "lbzip2"},
                 ],
@@ -350,8 +350,8 @@ DECOMPRESS_DEFINITIONS = {
                 "_common", "tar",
                 [
                     "--xattrs", "--xattrs-include=security.capability",
-                    "--xattrs-include=user.pax.flags", "%(comp_prog)s", "pixz", "-xpf",
-                    "%(source)s", "-C", "%(destination)s"
+                    "--xattrs-include=user.pax.flags", "%(comp_prog)s", "pixz",
+                    "-xpf", "%(source)s", "-C", "%(destination)s"
                 ],
                 "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
               ],
