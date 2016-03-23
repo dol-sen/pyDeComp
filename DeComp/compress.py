@@ -18,7 +18,8 @@ Maintained in full by:
 import os
 
 from DeComp.definitions import (DEFINITION_FIELDS, EXTENSION_SEPARATOR,
-    COMPRESSOR_PROGRAM_OPTIONS, DECOMPRESSOR_PROGRAM_OPTIONS)
+    COMPRESSOR_PROGRAM_OPTIONS, DECOMPRESSOR_PROGRAM_OPTIONS,
+    DEFAULT_TAR)
 from DeComp import log
 from DeComp.utils import create_classes, subcmd, check_available
 
@@ -33,8 +34,8 @@ class CompressMap(object):
 
     def __init__(self, definitions=None, env=None, default_mode=None,
                  separator=EXTENSION_SEPARATOR, search_order=None, logger=None,
-                 comp_prog=COMPRESSOR_PROGRAM_OPTIONS['linux'],
-                 decomp_opt=DECOMPRESSOR_PROGRAM_OPTIONS['linux']
+                 comp_prog=COMPRESSOR_PROGRAM_OPTIONS[DEFAULT_TAR],
+                 decomp_opt=DECOMPRESSOR_PROGRAM_OPTIONS[DEFAULT_TAR]
                 ):
         """Class init
 
