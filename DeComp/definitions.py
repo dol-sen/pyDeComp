@@ -197,7 +197,7 @@ COMPRESS_DEFINITIONS = {
                     "other_options", "%(comp_prog)s", "pixz", "-cpf",
                     "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
-                "PIXZ", ["tar.xz"], {"tar", "pixz"},
+                "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
             ],
     "pixz_x": [
                 "_common", "tar",
@@ -206,7 +206,7 @@ COMPRESS_DEFINITIONS = {
                     "--xattrs-include=user.pax.flags", "%(comp_prog)s", "pixz", "-cpf",
                     "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
-                "PIXZ", ["tar.xz"], {"tar", "pixz"},
+                "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
               ],
     "gzip": [
                 "_common", "tar",
@@ -344,7 +344,7 @@ DECOMPRESS_DEFINITIONS = {
                     "other_options", "%(comp_prog)s", "pixz", "%(decomp_opt)s",
                     "-xpf", "%(source)s", "-C", "%(destination)s"
                 ],
-                "PIXZ", ["tar.xz", "xz"], {"tar", "pixz"},
+                "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
             ],
     "pixz_x": [
                 "_common", "tar",
@@ -353,7 +353,7 @@ DECOMPRESS_DEFINITIONS = {
                     "--xattrs-include=user.pax.flags", "%(comp_prog)s", "pixz", "-xpf",
                     "%(source)s", "-C", "%(destination)s"
                 ],
-                "PIXZ", ["tar.xz", "xz"], {"tar", "pixz"},
+                "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
               ],
     "gzip": [
                 "_common", "tar",
