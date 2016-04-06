@@ -88,9 +88,9 @@ LIST_XATTRS_OPTIONS = {"linux": "--xattrs",
                       }
 
 if os.uname()[0] in ["Linux", "linux"]:
-	DEFAULT_TAR = 'linux'
+    DEFAULT_TAR = 'linux'
 else:
-	DEFAULT_TAR = 'bsd'
+    DEFAULT_TAR = 'bsd'
 
 COMPRESS_DEFINITIONS = {
     "Type": ["Compression", "Compression definitions loaded"],

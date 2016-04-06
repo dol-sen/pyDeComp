@@ -6,8 +6,10 @@
 Logging module for the Decomp libraries
 This module can be overriden by the consumer application
 """
-import os
+
+import errno
 import logging
+import os
 import time
 
 logger = logging.getLogger('DeComp')
@@ -34,7 +36,7 @@ def set_logger(logpath='', level=None):
     # add the handlers to logger
     if logpath:
         if not os.path.exists(logpath):
-            raise
+            raise OSError(errno.ENOENT, 'Log file not found: %s' % logpath)
         logname = os.path.join(logpath, '%s-%s.log'
                                % ('DeComp', time.strftime('%Y%m%d-%H:%M')))
         file_handler = logging.FileHandler(logname)

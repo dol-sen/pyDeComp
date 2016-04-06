@@ -186,7 +186,7 @@ class ContentsMap(object):
 
 
     @staticmethod
-    def _mountable(source, destination, cmd, args, verbose):
+    def _mountable(_source, _destination, _cmd, _args, _verbose):
         """Controll module to mount/umount a mountable filesystem
 
         :param source: optional path to the directory

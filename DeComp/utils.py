@@ -93,7 +93,7 @@ def check_available(commands):
         results = proc.communicate()
         stdout = results[0].decode('UTF-8')
     except OSError as error:
-        stdout = ''
+        stdout = u''
         log.error("utils: check_available(); OSError: %s, %s",
                   str(error), ' '.join(cmd))
     finally:
