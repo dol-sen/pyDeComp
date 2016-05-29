@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+'''
+setup.py
+'''
+
 import sys
 
 from distutils.core import setup
