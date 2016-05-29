@@ -67,10 +67,11 @@ values during run time:
                      it will be replaced by those options or removed from the args list
 """
 
-XATTRS_OPTIONS = {"linux": ["--xattrs",
+XATTRS_OPTIONS = {"linux": [
+                                "--xattrs",
                                 "--xattrs-include=security.capability",
                                 "--xattrs-include=user.pax.flags"
-                               ],
+                           ],
                   "bsd": [],
                   "None": [],
                  }
@@ -96,14 +97,14 @@ COMPRESS_DEFINITIONS = {
     "Type": ["Compression", "Compression definitions loaded"],
     "rsync": [
                 "rsync", "rsync",
-                ["-a", "--delete", "%(source)s",  "%(destination)s"],
+                ["-a", "--delete", "%(source)s", "%(destination)s"],
                 "RSYNC", None, {"rsync"},
              ],
     "lbzip2": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lbzip2", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lbzip2", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LBZIP2", ["tar.bz2"], {"tar", "lbzip2"},
               ],
@@ -135,25 +136,25 @@ COMPRESS_DEFINITIONS = {
                ],
     "lzip": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lzip", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lzip", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LZIP", ["tar.lzip"], {"tar", "lzip"},
               ],
     "lzma": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lzma", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lzma", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LZ", ["tar.lzma"], {"tar", "lzma"},
               ],
     "lzop": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lzop", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lzop", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LZOP", ["tar.lzop"], {"tar", "lzop"},
               ],
@@ -288,25 +289,25 @@ DECOMPRESS_DEFINITIONS = {
                ],
     "lzip": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lzip", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lzip", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LZIP", ["tar.lzip"], {"tar", "lzip"},
               ],
     "lzma": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lzma", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lzma", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LZ", ["tar.lzma"], {"tar", "lzma"},
               ],
     "lzop": [
                 "_common", "tar",
-                [   "other_options",
-                    "%(comp_prog)s", "lzop", "-cf", "%(filename)s", "-C",
-                    "%(basedir)s", "%(source)s"
+                [
+                    "other_options", "%(comp_prog)s", "lzop", "-cf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
                 "LZOP", ["tar.lzop"], {"tar", "lzop"},
               ],
@@ -409,8 +410,9 @@ CONTENTS_DEFINITIONS = {
             ],
     "lbzip2": [
                 "_common", "tar",
-                ["%(list_xattrs_opt)s", "%(comp_prog)s", "lbzip2",
-                 "%(decomp_opt)s", "-tvf", "%(source)s"
+                [
+                    "%(list_xattrs_opt)s", "%(comp_prog)s", "lbzip2",
+                    "%(decomp_opt)s", "-tvf", "%(source)s"
                 ],
                 "LBZIP2", [".tbz2", "bz2", ".tar.bz2"], {"tar", "lbzip2"},
               ],
@@ -426,8 +428,9 @@ CONTENTS_DEFINITIONS = {
           ],
     "pixz": [
                 "_common", "tar",
-                ["%(list_xattrs_opt)s", "%(comp_prog)s", "pixz",
-                 "%(decomp_opt)s", "-tvf", "%(source)s"
+                [
+                    "%(list_xattrs_opt)s", "%(comp_prog)s", "pixz",
+                    "%(decomp_opt)s", "-tvf", "%(source)s"
                 ],
                 "PIXZ", ["tar.xz", "xz"], {"tar", "pixz"},
             ],
@@ -443,9 +446,7 @@ CONTENTS_DEFINITIONS = {
                  ],
     "squashfs": [
                     "_common", "unsquashfs",
-                    [
-                        "-ll", "%(source)s",
-                    ],
+                    ["-ll", "%(source)s"],
                     "SQUASHFS", ["squashfs", "sfs"], {"unsquashfs"},
                 ],
 }
