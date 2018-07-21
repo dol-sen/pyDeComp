@@ -293,7 +293,7 @@ DECOMPRESS_DEFINITIONS = {
                     "other_options", "%(comp_prog)s", "lzip", "-cf",
                     "%(filename)s", "-C", "%(basedir)s", "%(source)s"
                 ],
-                "LZIP", ["tar.lzip"], {"tar", "lzip"},
+                "LZIP", ["tar.lz", "tar.lzip"], {"tar", "lz", "lzip"},
               ],
     "lzma": [
                 "_common", "tar",
