@@ -376,7 +376,7 @@ DECOMPRESS_DEFINITIONS = {
     "squashfs": [
                     "_common", "unsquashfs",
                     [
-                        "other_options", "-d", "%(destination)s",
+                        "-d", "%(destination)s",
                         "%(basedir)s/%(source)s"
                     ],
                     "SQUASHFS", ["squashfs", "sfs"], {"unsquashfs"},
