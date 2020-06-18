@@ -454,9 +454,10 @@ class CompressMap(object):
         if 'other_options' in cmdargs:
             if isinstance(cmdinfo['other_options'], str):
                 if not cmdinfo['other_options']:
-                    cmdargs.replace('other_options', '')
+                    cmdargs.remove('other_options')
                 else:
-                    cmdargs.replace('other_options', cmdinfo['other_options'])
+                    index = cmdargs.index('other_options')
+                    cmdargs[index] = cmdinfo['other_options']
             else: # assume it is an iterable
                 if not cmdinfo['other_options']:
                     cmdargs.remove('other_options')
