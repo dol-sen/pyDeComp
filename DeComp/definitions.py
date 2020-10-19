@@ -226,6 +226,14 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "GZIP", ["tar.gz"], {"tar"},
               ],
+    "squashfs_zstd": [
+                    "_sqfs", "mksquashfs",
+                    [
+                        "%(basedir)s/%(source)s", "%(filename)s", "-comp", "zstd",
+                        "-Xcompression-level", "19", "-b", "1M", "-no-recovery", "-noappend", "other_options"
+                    ],
+                    "SQUASHFS", ["squashfs", "sfs"], {"mksquashfs"},
+                ],
     "squashfs_xz": [
                     "_sqfs", "mksquashfs",
                     [
@@ -376,8 +384,8 @@ DECOMPRESS_DEFINITIONS = {
     "squashfs": [
                     "_common", "unsquashfs",
                     [
-                        "other_options", "-d", "%(destination)s",
-                        "%(basedir)s/%(source)s"
+                        "other_options", "-f", "-d", "%(destination)s",
+                        "%(source)s"
                     ],
                     "SQUASHFS", ["squashfs", "sfs"], {"unsquashfs"},
                 ],
