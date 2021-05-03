@@ -200,6 +200,14 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
             ],
+    "pixz_i": [
+                "_common", "tar",
+                [
+                    "other_options", "%(comp_prog)s", "pixz", "-cpf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
+            ],
     "pixz_x": [
                 "_common", "tar",
                 [
