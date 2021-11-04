@@ -417,9 +417,10 @@ class CompressMap(object):
                 self.extension(cmdinfo["mode"])
 
         sqfs_opts = self._sub_other_options(cmdlist.args, cmdinfo)
-        if not infodict['arch']:
-            sqfs_opts.remove("-Xbcj")
-            sqfs_opts.remove("%(arch)s")
+        if infodict['mode'] == "squashfs_xz":
+	        if not infodict['arch']:
+                    sqfs_opts.remove("-Xbcj")
+                    sqfs_opts.remove("%(arch)s")
         opts = ' '.join(sqfs_opts) % (cmdinfo)
         args = ' '.join([cmdlist.cmd, opts])
 
