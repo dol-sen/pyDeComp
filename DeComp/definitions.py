@@ -217,6 +217,22 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
               ],
+    "zstd": [
+                "_common", "tar",
+                [
+                    "other_options", "%(comp_prog)s", "zstd", "-cpf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "ZSTD", ["tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "zstd"},
+            ],
+    "pzstd": [
+                "_common", "tar",
+                [
+                    "other_options", "%(comp_prog)s", "pzstd", "-cpf",
+                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
+                ],
+                "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "pzstd"},
+            ],
     "gzip": [
                 "_common", "tar",
                 [
@@ -247,6 +263,22 @@ COMPRESS_DEFINITIONS = {
                     [
                         "%(basedir)s/%(source)s", "%(filename)s", "-comp", "gzip",
                         "-b", "1M", "other_options"
+                    ],
+                    "SQUASHFS", ["squashfs", "sfs"], {"mksquashfs"},
+                ],
+    "squashfs_zstd": [
+                    "_sqfs", "mksquashfs",
+                    [
+                        "%(basedir)s/%(source)s", "%(filename)s", "-comp", "zstd",
+                        "-Xcompression-level", "2", "-b", "1M", "other_options"
+                    ],
+                    "SQUASHFS", ["squashfs", "sfs"], {"mksquashfs"},
+                ],
+    "squashfs_pzstd": [
+                    "_sqfs", "mksquashfs",
+                    [
+                        "%(basedir)s/%(source)s", "%(filename)s", "-comp", "pzstd",
+                        "-Xcompression-level", "2", "-b", "1M", "other_options"
                     ],
                     "SQUASHFS", ["squashfs", "sfs"], {"mksquashfs"},
                 ],
@@ -364,6 +396,22 @@ DECOMPRESS_DEFINITIONS = {
                 ],
                 "PIXZ", ["tar.xz", "tpxz", "xz"], {"tar", "pixz"},
               ],
+    "zstd": [
+                "_common", "tar",
+                [
+                    "other_options", "%(comp_prog)s", "zstd", "%(decomp_opt)s",
+                    "-xpf", "%(source)s", "-C", "%(destination)s"
+                ],
+                "ZSTD", ["tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "zstd"},
+            ],
+    "pzstd": [
+                "_common", "tar",
+                [
+                    "other_options", "%(comp_prog)s", "pzstd", "%(decomp_opt)s",
+                    "-xpf", "%(source)s", "-C", "%(destination)s"
+                ],
+                "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "pzstd"},
+            ],
     "gzip": [
                 "_common", "tar",
                 [
@@ -393,11 +441,11 @@ DECOMPRESS_DEFINITIONS = {
 
 
 DECOMPRESSOR_SEARCH_ORDER = [
-    "pixz", "lbzip2", "squashfs", "gzip", "xz", "bzip2", "tar"
+    "zstd", "pzstd", "pixz", "lbzip2", "squashfs", "gzip", "xz", "bzip2", "tar"
 ]
 
 DECOMPRESSOR_XATTR_SEARCH_ORDER = [
-    "pixz_x", "lbzip2_x", "squashfs", "gzip_x", "xz_x", "bzip2_x", "tar_x"
+    "zstd", "pzstd", "pixz_x", "lbzip2_x", "squashfs", "gzip_x", "xz_x", "bzip2_x", "tar_x"
 ]
 
 """Configure this here in case it is ever changed.
@@ -442,6 +490,22 @@ CONTENTS_DEFINITIONS = {
                 ],
                 "PIXZ", ["tar.xz", "xz"], {"tar", "pixz"},
             ],
+    "zstd": [
+                "_common", "tar",
+                [
+                    "%(list_xattrs_opt)s", "%(comp_prog)s", "zstd",
+                    "%(decomp_opt)s", "-tvf", "%(source)s"
+                ],
+                "ZSTD", ["tar.zstd", "tar.zst", "zst"], {"tar", "zstd"},
+            ],
+    "pzstd": [
+                "_common", "tar",
+                [
+                    "%(list_xattrs_opt)s", "%(comp_prog)s", "pzstd",
+                    "%(decomp_opt)s", "-tvf", "%(source)s"
+                ],
+                "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "zst"], {"tar", "pzstd"},
+            ],
     "isoinfo_l": [
                     "_common", "isoinfo",
                     ["-l", "-i", "%(source)s"],
@@ -461,6 +525,7 @@ CONTENTS_DEFINITIONS = {
 
 # isoinfo_f should be a last resort only
 CONTENTS_SEARCH_ORDER = [
+    "zstd", "pzstd",
     "pixz", "lbzip2", "isoinfo_l", "squashfs",
     "gzip", "xz", "bzip2", "tar", "isoinfo_f"
 ]
