@@ -217,15 +217,6 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "ZSTD", ["tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "zstd"},
             ],
-    "zstd_x": [
-                "_common", "tar",
-                [
-                    "--xattrs", "--xattrs-include=security.capability",
-                    "--xattrs-include=user.pax.flags", "%(comp_prog)s", "zstd", "-cpf",
-                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
-                ],
-                "ZSTD", ["tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "zstd"},
-              ],
     "pzstd": [
                 "_common", "tar",
                 [
@@ -234,15 +225,6 @@ COMPRESS_DEFINITIONS = {
                 ],
                 "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "pzstd"},
             ],
-    "pzstd_x": [
-                "_common", "tar",
-                [
-                    "--xattrs", "--xattrs-include=security.capability",
-                    "--xattrs-include=user.pax.flags", "%(comp_prog)s", "pzstd", "-cpf",
-                    "%(filename)s", "-C", "%(basedir)s", "%(source)s"
-                ],
-                "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "pzstd"},
-              ],
     "gzip": [
                 "_common", "tar",
                 [
@@ -414,15 +396,6 @@ DECOMPRESS_DEFINITIONS = {
                 ],
                 "ZSTD", ["tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "zstd"},
             ],
-    "zstd_x": [
-                "_common", "tar",
-                [
-                    "--xattrs", "--xattrs-include=security.capability",
-                    "--xattrs-include=user.pax.flags", "%(comp_prog)s", "zstd",
-                    "-xpf", "%(source)s", "-C", "%(destination)s"
-                ],
-                "ZSTD", ["tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "zstd"},
-              ],
     "pzstd": [
                 "_common", "tar",
                 [
@@ -431,15 +404,6 @@ DECOMPRESS_DEFINITIONS = {
                 ],
                 "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "pzstd"},
             ],
-    "pzstd_x": [
-                "_common", "tar",
-                [
-                    "--xattrs", "--xattrs-include=security.capability",
-                    "--xattrs-include=user.pax.flags", "%(comp_prog)s", "pzstd",
-                    "-xpf", "%(source)s", "-C", "%(destination)s"
-                ],
-                "PZSTD", ["tar.pzstd", "tar.zstd", "tar.zst", "tzst", "zst"], {"tar", "pzstd"},
-              ],
     "gzip": [
                 "_common", "tar",
                 [
@@ -473,7 +437,7 @@ DECOMPRESSOR_SEARCH_ORDER = [
 ]
 
 DECOMPRESSOR_XATTR_SEARCH_ORDER = [
-    "zstd_x", "pzstd_x", "pixz_x", "lbzip2_x", "squashfs", "gzip_x", "xz_x", "bzip2_x", "tar_x"
+    "zstd", "pzstd", "pixz_x", "lbzip2_x", "squashfs", "gzip_x", "xz_x", "bzip2_x", "tar_x"
 ]
 
 """Configure this here in case it is ever changed.
